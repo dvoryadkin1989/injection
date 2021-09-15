@@ -13,6 +13,7 @@ public class DefaultInjector implements Injector {
 
     @Override
     public <T> Provider<T> getProvider(Class<T> type) {
+        //noinspection unchecked
         Binding<T> binding = (Binding<T>) bindings.get(type);
         return binding != null ? binding.getProvider() : null;
     }

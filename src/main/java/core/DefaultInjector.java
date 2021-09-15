@@ -28,7 +28,7 @@ public class DefaultInjector implements Injector {
     private <T> void doBind(Class<T> type, Class<? extends T> impl, boolean isSingleton) {
         Constructor<? extends T> implConstructor = findConstructorForInjection(impl);
         Class<?>[] typeDependencies = implConstructor.getParameterTypes();
-        bindings.put(type, new Binding<>(type, typeDependencies, implConstructor, isSingleton));
+        bindings.put(type, new Binding<>(type, typeDependencies, implConstructor, isSingleton, bindings));
     }
 
     private <T> Constructor<? extends T> findConstructorForInjection(Class<? extends T> impl) {

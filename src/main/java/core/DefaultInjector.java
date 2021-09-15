@@ -34,17 +34,12 @@ public class DefaultInjector implements Injector {
     }
 
     private <T> Constructor<? extends T> findConstructorForInjection(Class<? extends T> impl) {
-        try {
-            // TODO handle case when no annotation etc...
-            Constructor<?> maybeConstructor = Arrays.stream(impl.getConstructors())
-                    .filter(con -> con.getAnnotation(Inject.class) != null)
-                    .findFirst()
-                    .orElseThrow(ConstructorNotFoundException::new);
-
-            return impl.getConstructor();
-        } catch (NoSuchMethodException e) {
-            throw new ConstructorNotFoundException();
-        }
+        // TODO handle case when no annotation etc...
+        //noinspection unchecked
+        return (Constructor<? extends T>) Arrays.stream(impl.getConstructors())
+                .filter(con -> con.getAnnotation(Inject.class) != null)
+                .findFirst()
+                .orElseThrow(ConstructorNotFoundException::new);
     }
 
 }

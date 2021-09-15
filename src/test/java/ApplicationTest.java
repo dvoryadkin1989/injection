@@ -32,4 +32,13 @@ public class ApplicationTest {
         assertNotNull(service.getDao());
         assertNotSame(serviceProvider.getInstance(), serviceProvider.getInstance());
     }
+
+    @Test
+    void testSingletonProvider() {
+        Injector injector = new DefaultInjector();
+        injector.bindSingleton(EventDAO.class, InMemoryEventDAOImpl.class);
+        Provider<EventDAO> daoProvider = injector.getProvider(EventDAO.class);
+        assertNotNull(daoProvider);
+        assertSame(daoProvider.getInstance(), daoProvider.getInstance());
+    }
 }

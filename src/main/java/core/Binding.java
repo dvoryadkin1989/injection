@@ -24,11 +24,20 @@ public class Binding<T> {
         if (provider != null) {
             return provider;
         }
+        List<Provider<?>> dependencyProviders = getDependencyProviders();
+        provider = createProvider(implConstructor, dependencyProviders);
+        return provider;
+    }
+
+    private List<Provider<?>> getDependencyProviders() {
         // TODO check that binding is not found and throw exception
-        List<Provider<?>> dependencyProviders = Arrays.stream(implConstructor.getParameterTypes())
+        return Arrays.stream(implConstructor.getParameterTypes())
                 .map(type -> bindings.get(type).getProvider())
                 .collect(toList());
-        provider = new PrototypeProvider<>(implConstructor, dependencyProviders);
-        return provider;
+    }
+
+    private Provider<T> createProvider(Constructor<? extends T> implConstructor, List<Provider<?>> dependencyProviders) {
+        PrototypeProvider<T> prototypeProvider = new PrototypeProvider<>(implConstructor, dependencyProviders);
+        return isSingleton ? new SingletonProvider<>(prototypeProvider) : prototypeProvider;
     }
 }

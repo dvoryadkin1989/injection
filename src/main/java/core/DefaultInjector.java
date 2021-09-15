@@ -3,8 +3,10 @@ package core;
 import core.exception.ConstructorNotFoundException;
 
 import java.lang.reflect.Constructor;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class DefaultInjector implements Injector {
     private final Map<Class<?>, Binding<?>> bindings = new HashMap<>();
@@ -33,7 +35,12 @@ public class DefaultInjector implements Injector {
 
     private <T> Constructor<? extends T> findConstructorForInjection(Class<? extends T> impl) {
         try {
-            // TODO proper implementation
+            // TODO handle case when no annotation etc...
+            Constructor<?> maybeConstructor = Arrays.stream(impl.getConstructors())
+                    .filter(con -> con.getAnnotation(Inject.class) != null)
+                    .findFirst()
+                    .orElseThrow(ConstructorNotFoundException::new);
+
             return impl.getConstructor();
         } catch (NoSuchMethodException e) {
             throw new ConstructorNotFoundException();

@@ -4,7 +4,6 @@ import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -31,6 +30,7 @@ public class Binding<T> {
         }
         // TODO check that binding is not found and throw exception
         List<Provider<?>> dependencyProviders = Arrays.stream(dependencies).map(type -> bindings.get(type).getProvider()).collect(toList());
-        return new PrototypeProvider<>(implConstructor, dependencyProviders);
+        provider = new PrototypeProvider<>(implConstructor, dependencyProviders);
+        return provider;
     }
 }

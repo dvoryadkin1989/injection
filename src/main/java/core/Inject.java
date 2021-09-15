@@ -1,8 +1,12 @@
 package core;
 
-import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-@Target(ElementType.CONSTRUCTOR)
+import static java.lang.annotation.ElementType.CONSTRUCTOR;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+@Retention(RUNTIME)
+@Target(CONSTRUCTOR)
 public @interface Inject {
 }

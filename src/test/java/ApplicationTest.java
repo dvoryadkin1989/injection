@@ -5,6 +5,7 @@ import beans.InMemoryEventDAOImpl;
 import core.DefaultInjector;
 import core.Injector;
 import core.Provider;
+import core.exception.NoSuchBindingException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,5 +41,19 @@ public class ApplicationTest {
         Provider<EventDAO> daoProvider = injector.getProvider(EventDAO.class);
         assertNotNull(daoProvider);
         assertSame(daoProvider.getInstance(), daoProvider.getInstance());
+    }
+
+    @Test
+    void testMissingDependencyBinding() {
+        Injector injector = new DefaultInjector();
+        injector.bind(EventService.class, DefaultEventService.class);
+        assertThrows(NoSuchBindingException.class, () -> injector.getProvider(EventService.class));
+    }
+
+    @Test
+    void testProviderIsNullIfNoBinding() {
+        Injector injector = new DefaultInjector();
+        Provider<EventDAO> daoProvider = injector.getProvider(EventDAO.class);
+        assertNull(daoProvider);
     }
 }

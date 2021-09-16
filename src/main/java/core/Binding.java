@@ -1,5 +1,7 @@
 package core;
 
+import core.exception.NoSuchBindingException;
+
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.List;
@@ -30,10 +32,17 @@ public class Binding<T> {
     }
 
     private List<Provider<?>> getDependencyProviders() {
-        // TODO check that binding is not found and throw exception
         return Arrays.stream(implConstructor.getParameterTypes())
-                .map(type -> bindings.get(type).getProvider())
+                .map(bindings::get)
+                .peek(this::assertBindingIsPresent)
+                .map(Binding::getProvider)
                 .collect(toList());
+    }
+
+    private void assertBindingIsPresent(Binding<?> binding) {
+        if (binding == null) {
+            throw new NoSuchBindingException();
+        }
     }
 
     private Provider<T> createProvider(Constructor<? extends T> implConstructor, List<Provider<?>> dependencyProviders) {
